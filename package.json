@@ -1,0 +1,14 @@
+{
+  "name": "turn-integration-demo",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:turnhub/turn-integration-demo.git",
+  "author": "Simon de Haan <simon@turn.io>",
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "request": "^2.88.0"
+  }
+}
