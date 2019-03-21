@@ -2,7 +2,6 @@ const express = require("express");
 const debug = require("debug");
 const bodyParser = require("body-parser");
 const _ = require("lodash");
-const request = require("request");
 
 const app = express();
 app.use(bodyParser.json());
@@ -67,40 +66,22 @@ app.post("/context", (req, resp) => {
 app.post("/opt_status", (req, resp) => {
   const {
     address,
-    payload,
     integration_action_uuid,
-    integration_uuid
+    integration_uuid,
+    message,
+    payload
   } = req.body;
   const { opt_status } = payload;
-  log("/opt_status", { opt_status, address });
+  log({ integration_uuid, integration_action_uuid });
+  log("/opt_status", { opt_status, address, message });
   if (opt_status === "opt_in") {
     optin_state[address] = "Opted in";
   } else {
     optin_state[address] = "Opted out";
   }
 
+  resp.set("X-Turn-Integration-Refresh", true);
   resp.json({});
-
-  request(
-    {
-      method: "POST",
-      uri: `https://whatsapp.praekelt.org/api/integrations/${integration_uuid}/notify/finish`,
-      headers: {
-        "Content-Type": "application/json"
-      },
-      json: {
-        integration_action_uuid
-      }
-    },
-    function(error, response, body) {
-      if (response.statusCode == 201) {
-        console.log("document saved", { body });
-      } else {
-        console.log("error: " + response.statusCode);
-        console.log(body);
-      }
-    }
-  );
 });
 
 module.exports = app;
